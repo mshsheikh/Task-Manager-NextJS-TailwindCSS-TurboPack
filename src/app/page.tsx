@@ -1,9 +1,11 @@
-'use client';
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { nanoid } from 'nanoid';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useState, useRef, useEffect } from "react";
+import { nanoid } from "nanoid";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaFacebook, FaLinkedin } from "react-icons/fa";
 
 type Task = {
   title: string;
@@ -14,19 +16,21 @@ type Task = {
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-  const [editedTitle, setEditedTitle] = useState<string>('');
-  const [editedTimer, setEditedTimer] = useState<string>('10:00');
+  const [editedTitle, setEditedTitle] = useState<string>("");
+  const [editedTimer, setEditedTimer] = useState<string>("10:00");
   const inputReference = useRef<HTMLInputElement>(null);
 
   const timeStringToSeconds = (time: string) => {
-    const [minutes, seconds] = time.split(':').map(Number);
+    const [minutes, seconds] = time.split(":").map(Number);
     return minutes * 60 + seconds;
   };
 
   const secondsToTimeString = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const handleAddTask = () => {
@@ -40,11 +44,11 @@ export default function Home() {
 
       setTasks([newTask, ...tasks]);
       if (inputReference.current) {
-        inputReference.current.value = '';
+        inputReference.current.value = "";
       }
 
-      toast.success('Task added successfully!', {
-        position: 'top-center',
+      toast.success("Task added successfully!", {
+        position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -53,8 +57,8 @@ export default function Home() {
         progress: undefined,
       });
     } else {
-      toast.warning('Please enter a task and set a valid timer (HH:mm).', {
-        position: 'top-center',
+      toast.warning("Please enter a task and set a valid timer (HH:mm).", {
+        position: "top-center",
         autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: true,
@@ -73,28 +77,32 @@ export default function Home() {
 
   const handleSaveEdit = (taskId: string) => {
     setTasks(
-      tasks.map(task =>
+      tasks.map((task) =>
         task.id === taskId
-          ? { ...task, title: editedTitle, timer: timeStringToSeconds(editedTimer) }
+          ? {
+              ...task,
+              title: editedTitle,
+              timer: timeStringToSeconds(editedTimer),
+            }
           : task
       )
     );
     setEditingTaskId(null);
-    setEditedTitle('');
-    setEditedTimer('10:00');
+    setEditedTitle("");
+    setEditedTimer("10:00");
   };
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
-    toast.error('Task deleted successfully!', {
-      position: 'top-center',
+    setTasks(tasks.filter((task) => task.id !== taskId));
+    toast.error("Task deleted successfully!", {
+      position: "top-center",
       autoClose: 3000,
       hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      className: 'bg-red-600 text-white',
+      className: "bg-red-600 text-white",
     });
   };
 
@@ -102,13 +110,13 @@ export default function Home() {
     const timers = tasks.map((task) => {
       if (task.timer > 0) {
         const intervalId = setInterval(() => {
-          setTasks(prevTasks => {
-            const updatedTasks = prevTasks.map(t => {
+          setTasks((prevTasks) => {
+            const updatedTasks = prevTasks.map((t) => {
               if (t.id === task.id && t.timer > 0) {
                 const updatedTimer = t.timer - 1;
                 if (updatedTimer === 0) {
                   toast.info(`${t.title} timer expired!`, {
-                    position: 'top-center',
+                    position: "top-center",
                     autoClose: 3000,
                     hideProgressBar: true,
                     closeOnClick: true,
@@ -125,7 +133,6 @@ export default function Home() {
           });
         }, 1000);
 
-        // Return the interval ID to clear it later
         return intervalId;
       }
       return null;
@@ -141,7 +148,7 @@ export default function Home() {
   }, [tasks]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleAddTask();
     }
   };
@@ -149,7 +156,22 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-10 px-4">
       <div className="bg-white p-6 rounded-lg w-full max-w-4xl">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Task Manager</h1>
+        <div className="flex justify-center mb-4">
+          <img
+            src="/favicon.ico"
+            alt="Task Manager Icon"
+            className="w-14 h-14"
+          />
+        </div>
+
+        <h1
+          className="text-2xl font-bold text-gray-800 mb-6 text-center"
+          style={{ fontFamily: "Permanent Marker, cursive" }}
+        >
+          Task Manager
+        </h1>
+
+        {/* Task Input */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <input
             ref={inputReference}
@@ -172,27 +194,37 @@ export default function Home() {
           </button>
         </div>
 
+        {/* Task List */}
         <ul className="space-y-4">
           {tasks.map((elem: Task) => (
             <li
               key={elem.id}
               className="flex flex-col sm:flex-row justify-between items-center bg-gray-50 p-3 rounded-lg text-sm"
             >
-              {editingTaskId === elem.id ? (
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                  className="w-full sm:w-[282px] p-3 border border-gray-300 rounded-lg text-sm text-black mb-2 sm:mb-0"
-                />
-              ) : (
-                <span className="text-gray-800 text-sm font-bold">{elem.title}</span>
-              )}
+              {/* Task centered on small screens */}
+              <div className="w-full sm:w-[250px] text-center sm:text-left mb-4 sm:mb-0">
+                {editingTaskId === elem.id ? (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg text-sm text-black"
+                  />
+                ) : (
+                  <span className="text-gray-800 text-sm font-bold">
+                    {elem.title}
+                  </span>
+                )}
+              </div>
 
-              <span className="text-black text-xs">
-                {secondsToTimeString(elem.timer)}
-              </span>
+              {/* Timer */}
+              <div className="flex justify-center sm:w-[90px] mb-2 sm:mb-0">
+                <span className="text-black text-xs">
+                  {secondsToTimeString(elem.timer)}
+                </span>
+              </div>
 
+              {/* Edit & Delete Buttons */}
               <div className="flex gap-2">
                 {editingTaskId === elem.id ? (
                   <button
@@ -233,6 +265,36 @@ export default function Home() {
             </li>
           ))}
         </ul>
+
+        <div className="text-center text-[12px] mt-6 text-gray-600">
+          <strong>
+            <i>Made with ❤️ by Muhammad Salman Hussain</i>
+          </strong>
+        </div>
+
+        <div className="text-center text-[14px] mt-1 text-gray-600">
+          <strong>
+            <i>Follow for more insights!</i>
+          </strong>
+        </div>
+
+        {/* Social Icons */}
+        <div className="flex justify-center gap-4 mt-2">
+          <a
+            href="https://www.facebook.com/magiciansheikh"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFacebook className="text-blue-600 text-3xl hover:text-gray-600" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/mshsheikh"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaLinkedin className="text-blue-600 text-3xl hover:text-gray-600" />
+          </a>
+        </div>
       </div>
 
       <ToastContainer
