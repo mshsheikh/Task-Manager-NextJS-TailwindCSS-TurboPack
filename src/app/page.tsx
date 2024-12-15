@@ -268,7 +268,7 @@ export default function Home() {
 
         <div className="text-center text-[12px] mt-6 text-gray-600">
           <strong>
-            <i>Made with ❤️ by Muhammad Salman Hussain</i>
+            <i>Made with</i> ❤️ <i>by Muhammad Salman Hussain</i>
           </strong>
         </div>
 
